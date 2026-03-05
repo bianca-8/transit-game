@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Transit Game</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <div id="top-bar">
+    <button id="back" hidden>← Back</button>
+
+    <div id="top-right">
+      <button id="trip-start" hidden>▶ Start Trip</button>
+      <span id="timer" hidden></span>
+      <button id="map" aria-label="Open map" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+             fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0 1 18 0z"/>
+          <circle cx="12" cy="10" r="3"/>
+        </svg>
+        Map
+      </button>
+    </div>
+  </div>
+
+  <div id="landing">
+    <div id="landing-box">
+      <h1>Transit Game</h1>
+      <p class="subtitle">Enter your destination to begin</p>
+
+      <div class="input-group">
+        <label for="from-input">From</label>
+        <div class="input-row">
+          <input id="from-input" type="text" placeholder="Your starting location" autocomplete="off" />
+          <button id="gps">📍</button>
+        </div>
+      </div>
+
+      <div class="input-group">
+        <label for="to-input">To</label>
+        <input id="to-input" type="text" placeholder="Destination" autocomplete="off" />
+      </div>
+
+      <button id="start">Start Navigation</button>
+      <p id="error"></p>
+    </div>
+  </div>
+
+  <div id="map-overlay" role="dialog" aria-modal="true" aria-label="Map">
+    <div id="map-popup">
+      <div id="map-header">
+        <button id="close">✕</button>
+      </div>
+      <div id="map-content"></div>
+    </div>
+  </div>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="main.js"></script>
+</body>
+</html>
