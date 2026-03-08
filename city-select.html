@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Transit Game</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <div id="top-bar">
+    <a id="back" href="index.html">← Back</a>
+    <div id="top-right">
+      <button id="trip-start" hidden>▶ Start Trip</button>
+      <span id="timer" hidden></span>
+      <button id="map" aria-label="Open map" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+             fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0 1 18 0z"/>
+          <circle cx="12" cy="10" r="3"/>
+        </svg>
+        Map
+      </button>
+    </div>
+  </div>
+
+  <div id="city-select" style="display:flex">
+    <div id="city-select-box">
+      <h2>Choose a Game</h2>
+      <div id="city-grid">
+        <a class="city-card" href="city-tor.html">
+          <img class="city-icon" src="assets/tor-logo.png" alt="Toronto" />
+          <span class="city-name">Toronto</span>
+        </a>
+        <a class="city-card" href="city-ny.html">
+          <img class="city-icon" src="assets/ny-logo.png" alt="New York" />
+          <span class="city-name">New York</span>
+        </a>
+        <a class="city-card" href="city-bos.html">
+          <img class="city-icon" src="assets/bos-logo.png" alt="Boston" />
+          <span class="city-name">Boston</span>
+        </a>
+        <a class="city-card" href="city-was.html">
+          <img class="city-icon" src="assets/was-logo.png" alt="Washington" />
+          <span class="city-name">Washington</span>
+        </a>
+        <a class="city-card" href="city-cal.html">
+          <img class="city-icon" src="assets/cal-logo.png" alt="California" />
+          <span class="city-name">California</span>
+        </a>
+        <a class="city-card" href="city-lon.html">
+         <img class="city-icon" src="assets/lon-logo.png" alt="London" />
+          <span class="city-name">London</span>
+        </a>
+        <a class="city-card" href="city-tok.html">
+          <img class="city-icon" src="assets/tok-logo.png" alt="Tokyo" />
+          <span class="city-name">Tokyo</span>
+        </a>
+        <a class="city-card" href="city-kyo.html">
+         <img class="city-icon" src="assets/kyo-logo.png" alt="Kyoto" />
+          <span class="city-name">Kyoto</span>
+        </a>
+        <a class="city-card" href="city-bei.html">
+          <img class="city-icon" src="assets/bei-logo.png" alt="Beijing" />
+          <span class="city-name">Beijing</span>
+        </a>
+        <a class="city-card" href="city-cuba.html">
+          <img class="city-icon" src="assets/cuba-logo.png" alt="Cuba" />
+          <span class="city-name">Cuba</span>
+        </a>
+        <a class="city-card" href="city-dom.html">
+          <img class="city-icon" src="assets/dom-logo.png" alt="Dominican Republic" />
+          <span class="city-name">Dominican Republic</span>
+        </a>
+        <a class="city-card" href="city-que.html">
+          <img class="city-icon" src="assets/que-logo.png" alt="Quebec City" />
+          <span class="city-name">Quebec City</span>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div id="map-overlay" role="dialog" aria-modal="true" aria-label="Map">
+    <div id="map-popup">
+      <div id="map-header">
+        <button id="close">✕</button>
+      </div>
+      <div id="map-content"></div>
+    </div>
+  </div>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="city-select.js"></script>
+</body>
+</html>

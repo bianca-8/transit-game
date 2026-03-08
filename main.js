@@ -59,6 +59,24 @@ function startTimer(durationSeconds) {
   }, 1000);
 }
 
+function startTimerFromEnd(endTimeMs) {
+  clearInterval(interval);
+  timer.classList.remove('urgent', 'recalc');
+  function tick() {
+    const rem = Math.max(0, Math.round((endTimeMs - Date.now()) / 1000));
+    remaining = rem;
+    timer.textContent = formatTime(rem);
+    if (rem <= 60) {
+      timer.classList.add('urgent');
+    }
+    if (rem <= 0) {
+      clearInterval(interval);
+    }
+  }
+  tick();
+  interval = setInterval(tick, 1000);
+}
+
 // map
 function openMap() {
   overlay.classList.add('open');
@@ -88,8 +106,11 @@ document.addEventListener('keydown', (e) => {
 tripStart.addEventListener('click', () => {
   tripStart.setAttribute('hidden', '');
   timer.removeAttribute('hidden');
+  back.removeAttribute('hidden');
   navigating = true;
   startTimer(time);
+  sessionStorage.setItem('transit_timerEndTime', String(Date.now() + time * 1000));
+  sessionStorage.setItem('transit_tripStarted', 'true');
 });
 
 // back
@@ -145,6 +166,9 @@ back.addEventListener('click', () => {
   gps.textContent = '📍';
   gps.disabled = false;
 
+  ['transit_appState','transit_fromVal','transit_toVal','transit_fromCoords',
+   'transit_destCoord','transit_routeCoords','transit_duration',
+   'transit_timerEndTime','transit_tripStarted'].forEach(k => sessionStorage.removeItem(k));
   landing.classList.remove('fade-out');
   landing.style.display = 'flex';
 });
@@ -183,7 +207,7 @@ function drawRoute(from, to, coords) {
 
   dest = L.marker([to.lat, to.lng])
     .addTo(map)
-    .bindPopup('🏁 Destination');
+    .bindPopup('Destination');
 
   setCurrent(from);
   map.fitBounds(routeLine.getBounds(), { padding: [50, 50] });
@@ -210,7 +234,7 @@ function setCurrent(pos) {
 // geocode
 async function geocode(query) {
   const url = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(query)}&format=json&limit=1`;
-  const res  = await fetch(url, { headers: { 'Accept-Language': 'en' } });
+  const res = await fetch(url, { headers: { 'Accept-Language': 'en' } });
   const data = await res.json();
   if (!data.length) {
     throw new Error(`Location not found: "${query}"`);
@@ -219,8 +243,8 @@ async function geocode(query) {
 }
 
 async function reverseGeocode(lat, lng) {
-  const url  = `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json`;
-  const res  = await fetch(url, { headers: { 'Accept-Language': 'en' } });
+  const url = `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json`;
+  const res = await fetch(url, { headers: { 'Accept-Language': 'en' } });
   const data = await res.json();
   if (!data.address) {
     return `${lat.toFixed(5)}, ${lng.toFixed(5)}`;
@@ -244,7 +268,7 @@ function distanceBetween(a, b) {
   const R = 6371000;
   const dLat = (b.lat - a.lat) * Math.PI / 180;
   const dLng = (b.lng - a.lng) * Math.PI / 180;
-  const s    = Math.sin(dLat / 2) ** 2 + Math.cos(a.lat * Math.PI / 180) * Math.cos(b.lat * Math.PI / 180) * Math.sin(dLng / 2) ** 2;
+  const s = Math.sin(dLat / 2) ** 2 + Math.cos(a.lat * Math.PI / 180) * Math.cos(b.lat * Math.PI / 180) * Math.sin(dLng / 2) ** 2;
   return R * 2 * Math.atan2(Math.sqrt(s), Math.sqrt(1 - s));
 }
 
@@ -310,8 +334,8 @@ async function handlePosition(position) {
       timer.classList.add('recalc');
       timer.textContent = 'Recalc…';
       try {
-        const route  = await fetchRoute(pos, destCoord);
-        routeCoords  = route.coords;
+        const route = await fetchRoute(pos, destCoord);
+        routeCoords = route.coords;
         drawRoute(pos, destCoord, route.coords);
         startTimer(route.duration);
       } catch (routeError) {
@@ -360,50 +384,23 @@ start.addEventListener('click', async () => {
     setError('Please enter both a starting location and a destination');
     return;
   }
-
   setError('');
   start.textContent = 'Calculating route…';
   start.disabled = true;
-
   try {
-    let from;
-    if (fromInput._gpsCoords) {
-      from = fromInput._gpsCoords;
-    } else {
-      from = await geocode(fromVal);
-    }
+    const from = fromInput._gpsCoords ? fromInput._gpsCoords : await geocode(fromVal);
     const to = await geocode(toVal);
-    destCoord = to;
-
     const route = await fetchRoute(from, to);
-    routeCoords = route.coords;
-    time = route.duration;
-    pos = from;
-
-    drawRoute(from, to, route.coords);
-
-    back.removeAttribute('hidden');
-    tripStart.removeAttribute('hidden');
-    timer.setAttribute('hidden', '');
-    map_button.removeAttribute('hidden');
-    map_button.disabled = false;
-
-    landing.classList.add('fade-out');
-    fade = setTimeout(() => {
-      landing.style.display = 'none';
-      fade = null;
-    }, 400);
-
-    openMap();
-
-    if (navigator.geolocation) {
-      watch = navigator.geolocation.watchPosition(handlePosition, null, {
-        enableHighAccuracy: true,
-        maximumAge: 3000,
-        timeout: 10000,
-      });
-    }
-
+    sessionStorage.setItem('transit_fromVal', fromVal);
+    sessionStorage.setItem('transit_toVal', toVal);
+    sessionStorage.setItem('transit_fromCoords', JSON.stringify(from));
+    sessionStorage.setItem('transit_destCoord', JSON.stringify(to));
+    sessionStorage.setItem('transit_routeCoords', JSON.stringify(route.coords));
+    sessionStorage.setItem('transit_duration', String(route.duration));
+    sessionStorage.setItem('transit_appState', 'city-select');
+    sessionStorage.removeItem('transit_tripStarted');
+    sessionStorage.removeItem('transit_timerEndTime');
+    window.location.href = 'city-select.html';
   } catch (err) {
     setError(err.message || 'Something went wrong — please try again');
     start.textContent = 'Start Navigation';
