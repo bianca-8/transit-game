@@ -5,11 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Transit Game</title>
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="../style.css" />
 </head>
 <body>
   <div id="top-bar">
-    <a id="back" href="city-select.html">← Back</a>
+    <a id="back" href="../city-select.html">← Back</a>
     <div id="top-right">
       <span id="timer" hidden></span>
       <button id="map" aria-label="Open map" hidden>
@@ -18,8 +18,8 @@
     </div>
   </div>
   <div class="city-page">
-    <img class="icon" src="assets/ban.png" alt="Banff" />
-    <h2>Banff</h2>
+    <img class="icon" src="../assets/tor.png" alt="Toronto" />
+    <h2>Toronto</h2>
     <p>Game!</p>
   </div>
   <div id="map-overlay" role="dialog" aria-modal="true" aria-label="Map">
@@ -30,7 +30,8 @@
       <div id="map-content"></div>
     </div>
   </div>
+
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-  <script src="city.js"></script>
+  <script src="../city.js"></script>
 </body>
 </html>
