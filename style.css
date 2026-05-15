@@ -282,8 +282,12 @@ html, body {
   transform: scale(0.96);
 }
 
-#map svg {
+#map::before {
+  content: '';
+  width: 16px;
+  height: 16px;
   flex-shrink: 0;
+  background: no-repeat center/contain url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0 1 18 0z'/%3E%3Ccircle cx='12' cy='10' r='3'/%3E%3C/svg%3E");
 }
 
 #map-overlay {
